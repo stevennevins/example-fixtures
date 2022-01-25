@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "./utils/GreeterTest.sol";
+import "./utils/Fixture2.sol";
 import "./utils/console.sol";
 import {Errors} from "../Greeter.sol";
 
