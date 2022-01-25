@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./utils/Fixture2.sol";
-import "./utils/console.sol";
+import "log/console.sol";
 import {Errors} from "../Greeter.sol";
 
 contract Greet is GreeterTest {
