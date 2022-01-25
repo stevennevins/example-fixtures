@@ -1,0 +1,25 @@
+name: Lint (solhint)
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    paths:
+      - "**.sol"
+jobs:
+  solhint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install
+        run: npm install  --save-dev solhint
+        env:
+          CI: true
+
+      - name: Run solhint
+        run: |
+          npx solhint --config ./.solhint.json 'src/**/*.sol'
