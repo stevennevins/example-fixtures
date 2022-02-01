@@ -10,6 +10,7 @@ library Errors {
 }
 
 contract Greeter is Ownable {
+    uint256 test = 1;
     string public greeting;
 
     function gm() public onlyOwner {
