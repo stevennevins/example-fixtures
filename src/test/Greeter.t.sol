@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import {Fixture1, Fixture2} from "./utils/Fixture2.sol";
+import {Fixture1, Fixture2} from "./fixtures/Fixture2.sol";
 import "log/console.sol";
 import {Errors} from "../contracts/Greeter.sol";
 
