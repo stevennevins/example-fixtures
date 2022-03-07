@@ -2,3 +2,5 @@
 /node_modules
 .gas-snapshot
 /cache
+
+/src/test/blacksmith

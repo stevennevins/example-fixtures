@@ -18,6 +18,8 @@ jobs:
         uses: onbjerg/foundry-toolchain@v1
         with:
           version: nightly
+      - name: Create users
+        run: make users
 
       - name: Run tests
-        run: forge test
+        run: make test
