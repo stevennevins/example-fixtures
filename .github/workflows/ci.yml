@@ -18,6 +18,9 @@ jobs:
         uses: onbjerg/foundry-toolchain@v1
         with:
           version: nightly
+      - name: Force recompile
+        run: forge build --force
+
       - name: Create users
         run: make users
 
