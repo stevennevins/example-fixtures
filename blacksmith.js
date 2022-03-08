@@ -7,7 +7,7 @@ const cmd = process.argv[2];
 switch (cmd) {
   case "create": {
     console.log("running :: forge build");
-    exec("forge build --contracts src/contracts", (err, stdout, stderr) => {
+    exec("forge build", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
         const success = stdout.split("\n")[3]?.indexOf("Compiler run successful") === 0;
@@ -173,7 +173,7 @@ function createCode({ name, source, abi }) {
   const code = `// SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 import "./Blacksmith.sol";
-import "../../${source.slice(4)}";
+import "../../src/${source.slice(4)}";
 
 contract ${name}BS {
     Bsvm constant bsvm = Bsvm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
@@ -204,7 +204,7 @@ contract ${name}BS {
 }
 
 function writeFile({ name, code }) {
-  const path = "./src/test/blacksmith";
+  const path = "./test/blacksmith";
   if (!fs.existsSync(path)) fs.mkdirSync(path);
   fs.writeFileSync(`${path}/${name}.bs.sol`, code);
   fs.writeFileSync(`./${path}/Blacksmith.sol`, blacksmithCode());
