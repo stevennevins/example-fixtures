@@ -7,7 +7,7 @@ const cmd = process.argv[2];
 switch (cmd) {
   case "create": {
     console.log("running :: forge build");
-    exec("forge build --contracts contracts", (err, stdout, stderr) => {
+    exec("forge build --contracts src/contracts", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
         const success = stdout.split("\n")[3]?.indexOf("Compiler run successful") === 0;
