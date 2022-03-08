@@ -4,4 +4,4 @@
 /cache
 
 /src/test/blacksmith
-blacksmith.js
+./blacksmith.js
