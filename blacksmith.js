@@ -7,7 +7,7 @@ const cmd = process.argv[2]
 switch (cmd) {
     case 'create': {
         console.log('running :: forge build')
-        exec('forge build --contracts src/contracts', (err, stdout, stderr) => {
+        exec('forge build', (err, stdout, stderr) => {
             if (stdout) {
                 const nochange = stdout.split('\n')[1]?.indexOf('No files changed') === 0
                 const success = stdout.split('\n')[3]?.indexOf('Compiler run successful') === 0
@@ -36,13 +36,13 @@ function getABI({ name, source }) {
     return JSON.parse(fs.readFileSync(path, 'utf8')).abi
 }
 
-function createFunction(name, fn) {
+function createFunction(abi, name, fn) {
 
     function fmtType(type) {
         if (type === 'bytes') return `${type} memory`
         if (type === 'string') return `${type} memory`
         if (type.indexOf('struct ') === 0) return `${type.slice(7)} memory`
-
+        if (type.indexOf("contract ") === 0 && type.indexOf("]") === type.length - 1) return `${type.slice(9)} memory`;
         if (type.indexOf('contract ') === 0) return `${type.slice(9)}`
 
         if (type.indexOf('enum ') === 0) type = type.slice(5)
@@ -69,9 +69,12 @@ function createFunction(name, fn) {
         return ''
     }
 
-    function fmtReturn() {
-        if (fn.outputs.length === 0) return ''
-        return `return `
+    function fmtReturn(abi, name) {
+        if (fn.outputs.length === 0 && abi.slice(-1)[0].type.indexOf("receive") === 0)
+        return `${name}(payable(target))`;
+        if (fn.outputs.length === 0) return `${name}(target)`;
+        if (abi.slice(-1)[0].type.indexOf("receive") === 0) return `return ${name}(payable(target))`;
+        return `return ${name}(target)`;
     }
 
     function fmtOutput() {
@@ -84,7 +87,7 @@ function createFunction(name, fn) {
     }
 
     return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank ${fmtOutput()} {
-        ${fmtReturn()}${name}(target).${fn.name}${fmtValue()}${fmtInput(false)};
+        ${fmtReturn(abi,name)}.${fn.name}${fmtValue()}${fmtInput(false)};
     }`
 }
 
@@ -191,7 +194,7 @@ contract ${name}BS {
         _;
     }
 
-    ${abi.filter(x => x.type === 'function').map(x => createFunction(name, x)).join('\n\n\t')}
+    ${abi.filter(x => x.type === 'function').map(x => createFunction(abi, name, x)).join('\n\n\t')}
 
 }
 `
