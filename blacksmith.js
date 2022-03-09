@@ -7,7 +7,7 @@ const cmd = process.argv[2];
 switch (cmd) {
   case "create": {
     console.log("running :: forge build");
-    exec("forge build", (err, stdout, stderr) => {
+    exec("forge build --contracts src --force", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
         const success = stdout.split("\n")[3]?.indexOf("Compiler run successful") === 0;
@@ -204,7 +204,7 @@ contract ${name}BS {
 }
 
 function writeFile({ name, code }) {
-  const path = "./tests/blacksmith";
+  const path = "./nottests/blacksmith";
   if (!fs.existsSync(path)) fs.mkdirSync(path);
   fs.writeFileSync(`${path}/${name}.bs.sol`, code);
   fs.writeFileSync(`./${path}/Blacksmith.sol`, blacksmithCode());

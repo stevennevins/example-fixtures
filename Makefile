@@ -1,3 +1,3 @@
 all    :  users test;
 users   :; node blacksmith.js create
-test :; forge test -vvv --contracts tests
+test :; forge test -vvv --contracts nottests
