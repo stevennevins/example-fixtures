@@ -1,3 +1,0 @@
-[default]
-src = 'src'                                                   # the source directory
-test = './../test' 
