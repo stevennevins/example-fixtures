@@ -204,7 +204,7 @@ contract ${name}BS {
 }
 
 function writeFile({ name, code }) {
-  const path = "./nottests/blacksmith";
+  const path = "./_tests/blacksmith";
   if (!fs.existsSync(path)) fs.mkdirSync(path);
   fs.writeFileSync(`${path}/${name}.bs.sol`, code);
   fs.writeFileSync(`./${path}/Blacksmith.sol`, blacksmithCode());
