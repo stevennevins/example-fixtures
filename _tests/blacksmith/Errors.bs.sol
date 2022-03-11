@@ -8,12 +8,12 @@ contract ErrorsBS {
 
     address addr;
     uint256 privateKey;
-    address payable target;
+    address payable proxiedContract;
     
     constructor( address _addr, uint256 _privateKey, address _target) {
         addr = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
         privateKey = _privateKey;
-        target = payable(_target);
+        proxiedContract = payable(_target);
     }
 
     modifier prank() {

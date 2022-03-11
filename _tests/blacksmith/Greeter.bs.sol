@@ -8,12 +8,12 @@ contract GreeterBS {
 
     address addr;
     uint256 privateKey;
-    address payable target;
+    address payable proxiedContract;
     
     constructor( address _addr, uint256 _privateKey, address _target) {
         addr = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
         privateKey = _privateKey;
-        target = payable(_target);
+        proxiedContract = payable(_target);
     }
 
     modifier prank() {
@@ -22,27 +22,27 @@ contract GreeterBS {
     }
 
     function gm() public prank  {
-        Greeter(target).gm();
+        Greeter(proxiedContract).gm();
     }
 
 	function greet(string memory _greeting) public prank  {
-        Greeter(target).greet(_greeting);
+        Greeter(proxiedContract).greet(_greeting);
     }
 
 	function greeting() public prank returns (string memory) {
-        return Greeter(target).greeting();
+        return Greeter(proxiedContract).greeting();
     }
 
 	function owner() public prank returns (address) {
-        return Greeter(target).owner();
+        return Greeter(proxiedContract).owner();
     }
 
 	function renounceOwnership() public prank  {
-        Greeter(target).renounceOwnership();
+        Greeter(proxiedContract).renounceOwnership();
     }
 
 	function transferOwnership(address newOwner) public prank  {
-        Greeter(target).transferOwnership(newOwner);
+        Greeter(proxiedContract).transferOwnership(newOwner);
     }
 
 }

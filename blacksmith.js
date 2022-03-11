@@ -86,7 +86,7 @@ function createFunction(name, fn) {
   }
 
   return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank ${fmtOutput()} {
-        ${fmtReturn()}${name}(target).${fn.name}${fmtValue()}${fmtInput(false)};
+        ${fmtReturn()}${name}(proxiedContract).${fn.name}${fmtValue()}${fmtInput(false)};
     }`;
 }
 
@@ -177,12 +177,12 @@ contract ${name}BS {
 
     address addr;
     uint256 privateKey;
-    address payable target;
+    address payable proxiedContract;
     
     constructor( address _addr, uint256 _privateKey, address _target) {
         addr = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
         privateKey = _privateKey;
-        target = payable(_target);
+        proxiedContract = payable(_target);
     }
 
     modifier prank() {
