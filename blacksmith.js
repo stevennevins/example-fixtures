@@ -10,7 +10,7 @@ switch (cmd) {
     exec("forge build --contracts src --force", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
-        const success = stdout.split("\n")[3]?.indexOf("Compiler run successful") === 0;
+        const success = stdout.split("\n")[2]?.indexOf("Compiler run successful") === 0;
         if (success || nochange) {
           console.log("\x1b[32m%s\x1b[0m", "build   :: completed");
         } else {
