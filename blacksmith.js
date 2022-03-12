@@ -7,7 +7,7 @@ const cmd = process.argv[2];
 switch (cmd) {
   case "create": {
     console.log("running :: forge build");
-    exec("forge build --contracts src --force", (err, stdout, stderr) => {
+    exec("mv tests _tests && forge build --contracts src --force", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
         const success = stdout.split("\n")[2]?.indexOf("Compiler run successful") === 0;
@@ -21,6 +21,7 @@ switch (cmd) {
         console.log("\x1b[31m%s\x1b[0m", "build   :: failed badly");
         createBlacksmiths();
       }
+      exec("mv _tests tests");
     });
     break;
   }
