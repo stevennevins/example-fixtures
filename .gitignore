@@ -3,4 +3,4 @@
 .gas-snapshot
 /cache
 
-/_tests/blacksmith
+/tests/blacksmith
