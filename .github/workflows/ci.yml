@@ -20,7 +20,7 @@ jobs:
           version: nightly
 
       - name: Create users
-        run: make users
+        run: node blacksmith.js create
 
       - name: Run tests
-        run: make test
+        run: forge test -vvvv
