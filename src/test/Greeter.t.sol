@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Fixture1, Fixture2} from "./fixtures/Fixture2.sol";
 import "log/console.sol";
-import {Errors} from "../src/Greeter.sol";
+import {Errors} from "../Greeter.sol";
 
 contract Greet is Fixture1 {
     function testCannotGm() public {
