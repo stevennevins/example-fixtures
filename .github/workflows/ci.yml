@@ -23,4 +23,4 @@ jobs:
         run: node blacksmith.js create
 
       - name: Run tests
-        run: forge test -vvvv
+        run: forge test -vvv
