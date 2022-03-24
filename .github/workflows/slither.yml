@@ -35,10 +35,6 @@ jobs:
       - name: Install dependencies
         run: nix-shell --run 'dapp update'
 
-      - name: Get remappings
-        run: |
-          "DAPP_REMAPPINGS=$(cat remappings.txt)" >> $GITHUB_ENV
-
       - name: Build the contracts
         run: nix-shell --run 'dapp build'
 
