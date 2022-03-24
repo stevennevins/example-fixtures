@@ -1,26 +1,41 @@
 name: Slither Analysis
-on: [push]
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           submodules: recursive
 
-      - name: Install Foundry
-        uses: onbjerg/foundry-toolchain@v1
+      - name: Set up Node
+        uses: actions/setup-node@v2
+
+      - name: Install Yarn
+        run: npm install --global yarn
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v16
+
+      - name: Configure Cachix
+        uses: cachix/cachix-action@v10
         with:
-          version: nightly
+          name: dapp
 
-      - name: Create users
-        run: node blacksmith.js create
+      - name: Install dependencies
+        run: nix-shell --run 'make'
 
-      - name: Run build contractsk
-        run: forge build
+      - name: Build the contracts
+        run: nix-shell --run 'make build'
+
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
         with:
           ignore-compile: true
-          target: "src/"
-          solc-version: "0.8.11"

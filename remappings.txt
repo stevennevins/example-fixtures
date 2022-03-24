@@ -1,0 +1,4 @@
+openzeppelin-contracts/=lib/openzeppelin-contracts/
+log/=lib/log/src/
+forge-std/=lib/forge-std/src/
+ds-test/=lib/ds-test/src/
