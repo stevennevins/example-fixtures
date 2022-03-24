@@ -4,6 +4,20 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Create users
+        run: node blacksmith.js create
+
+      - name: Run build contractsk
+        run: forge build
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
         with:
