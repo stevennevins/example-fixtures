@@ -1,4 +1,0 @@
-openzeppelin-contracts/=/Users/stevennevins/Documents/javascript/test-fixtures/lib/openzeppelin-contracts/
-ds-test/=/Users/stevennevins/Documents/javascript/test-fixtures/lib/ds-test/src/
-log/=/Users/stevennevins/Documents/javascript/test-fixtures/lib/log/src/
-forge-std/=/Users/stevennevins/Documents/javascript/test-fixtures/lib/forge-std/src/
