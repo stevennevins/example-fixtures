@@ -37,6 +37,8 @@ jobs:
 
       - name: Build the contracts
         run: nix-shell --run 'dapp build'
+        env:
+          DAPP_REMAPPINGS: $(cat remappings.txt)
 
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
