@@ -1,4 +1,0 @@
-
-   
-# Make dependencies available
-export DAPP_REMAPPINGS=$(cat remappings.txt)
