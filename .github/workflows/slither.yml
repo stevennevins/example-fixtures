@@ -36,7 +36,8 @@ jobs:
         run: nix-shell --run 'dapp update'
 
       - name: Get remappings
-        run: echo "DAPP_REMAPPINGS=$(cat remappings.txt)" >> $GITHUB_ENV
+        run: |
+          "DAPP_REMAPPINGS=$(cat remappings.txt)" >> $GITHUB_ENV
 
       - name: Build the contracts
         run: nix-shell --run 'dapp build'
