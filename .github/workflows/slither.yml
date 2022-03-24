@@ -23,11 +23,20 @@ jobs:
         with:
           name: dapp
 
+      - name: export remappings
+        run: export DAPP_REMAPPINGS=$(cat remappings.txt)
+
+      - name: rm test files
+        run: rm -rf src/test
+
+      - name: Install solc
+        run: nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_0_8_11
+
       - name: Install dependencies
-        run: nix-shell --run 'make dapp'
+        run: nix-shell --run 'dapp update'
 
       - name: Build the contracts
-        run: nix-shell --run 'make dapp_build'
+        run: nix-shell --run 'dapp build'
 
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
