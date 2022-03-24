@@ -36,13 +36,11 @@ jobs:
         run: nix-shell --run 'dapp update'
 
       - name: Get remappings
-        id: vars
-        run: echo ::set-output name=remaps::$(cat remappings.txt)
+        run: |
+          echo "DAPP_REMAPPINGS=$(cat remappings.txt)" >> $GITHUB_ENV
 
       - name: Build the contracts
         run: nix-shell --run 'dapp build'
-        env:
-          DAPP_REMAPPINGS: ${{ steps.vars.outputs.remaps}}
 
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
