@@ -1,5 +1,4 @@
 all    : users test;
-dapp_build  :; dapp build
 users   :; node blacksmith.js create
 build :; forge build
 test :; forge test -vvv --contracts src/test
