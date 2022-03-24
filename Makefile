@@ -1,6 +1,6 @@
 all    : users test;
 # dapp deps
-dapp: dapp_solc dapp_update;
+dapp: dapp_solc dapp_update users;
 dapp_update:; dapp update
 SOLC_VERSION := 0_8_11
 dapp_solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_${SOLC_VERSION}
