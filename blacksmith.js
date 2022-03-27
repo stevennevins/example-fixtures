@@ -86,7 +86,7 @@ function createFunction(name, fn) {
     return `(${fmtArgs(fn.inputs, withType, (withName = true))})`;
   }
 
-  return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank ${fmtOutput()} {
+  return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank stopPrank ${fmtOutput()} {
         ${fmtReturn()}${name}(proxiedContract).${fn.name}${fmtValue()}${fmtInput(false)};
     }`;
 }
@@ -101,6 +101,7 @@ interface Bsvm {
     function deal(address who, uint256 amount) external;
 
     function startPrank(address sender, address origin) external;
+    function stopPrank() external;
 
     function sign(uint256 privateKey, bytes32 digest)
         external
@@ -128,6 +129,11 @@ contract Blacksmith {
         _;
     }
 
+    modifier stopPrank() {
+        _;
+        bsvm.stopPrank();
+    }
+
     function addr() external view returns (address) {
         return _address;
     }
@@ -140,6 +146,7 @@ contract Blacksmith {
         public
         payable
         prank
+        stopPrank
         returns (bytes memory)
     {
         require(_address.balance >= msg.value, "BS ERROR : Insufficient balance");
@@ -189,6 +196,11 @@ contract ${name}BS {
     modifier prank() {
         bsvm.startPrank(addr, addr);
         _;
+    }
+
+    modifier stopPrank(){
+        _;
+        bsvm.stopPrank();
     }
 
     ${abi

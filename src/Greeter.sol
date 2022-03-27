@@ -24,4 +24,9 @@ contract Greeter is Ownable {
         );
         greeting = _greeting;
     }
+
+    function gm_origin() public {
+        require(msg.sender == tx.origin, "Not tx.origin");
+        greeting = "gm";
+    }
 }
