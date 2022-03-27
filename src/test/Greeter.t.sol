@@ -56,4 +56,8 @@ contract GreetTest is DSTest {
         console.log(greeter.greeting());
         assertEq(greeter.greeting(), greeting);
     }
+
+    function testOrigin() public {
+        alice.greeter.gm_origin();
+    }
 }
