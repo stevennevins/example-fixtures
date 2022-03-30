@@ -1,5 +1,3 @@
-
-   
 let
   pkgs = import (builtins.fetchGit rec {
     name = "dapptools-${rev}";
