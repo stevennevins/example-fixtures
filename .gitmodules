@@ -13,3 +13,6 @@
 [submodule "lib/contracts"]
 	path = lib/contracts
 	url = https://github.com/re-nft/contracts
+[submodule "lib/memmove"]
+	path = lib/memmove
+	url = https://github.com/brockelmore/memmove
