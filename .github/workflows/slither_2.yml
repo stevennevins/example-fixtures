@@ -18,7 +18,7 @@ jobs:
           version: nightly
 
       - name: Build the contracts
-        run: mv src/tests _tests && forge build
+        run: mv src/test _tests && forge build
 
       - name: Run Slither
         uses: crytic/slither-action@v0.1.1
