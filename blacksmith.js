@@ -10,14 +10,16 @@ switch (cmd) {
     exec("mv src/test _test && forge build --contracts src --force", (err, stdout, stderr) => {
       if (stdout) {
         const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
-        const success = stdout.split("\n")[2]?.indexOf("Compiler run successful") === 0;
-        if (success || nochange) {
-          console.log("\x1b[32m%s\x1b[0m", "build   :: completed");
+        const success = stdout.split("\n")[1]?.indexOf("Compiler run successful") === 0;
+        if (err) {
+          console.log(err);
         } else {
-          console.log("\x1b[31m%s\x1b[0m", "build   :: failed");
+          console.log("success");
         }
+
         createBlacksmiths();
       } else {
+        console.log(err);
         console.log("\x1b[31m%s\x1b[0m", "build   :: failed badly");
         createBlacksmiths();
       }
@@ -28,6 +30,26 @@ switch (cmd) {
   case "clean":
     cleanBlacksmith();
     break;
+  case "build":
+    console.log("running :: forge build :: only src");
+    exec("mv src/test _test && forge build --contracts src --force", (err, stdout, stderr) => {
+      if (stdout) {
+        const nochange = stdout.split("\n")[1]?.indexOf("No files changed") === 0;
+        const success = stdout.split("\n")[1]?.indexOf("Compiler run successful") === 0;
+        if (success || nochange) {
+          console.log("\x1b[32m%s\x1b[0m", "build   :: completed");
+        } else {
+          console.log("\x1b[31m%s\x1b[0m", "build   :: failed");
+          console.log(err);
+        }
+      } else {
+        console.log(err);
+        console.log("\x1b[31m%s\x1b[0m", "build   :: failed badly");
+      }
+      exec("mv _test src/test");
+    });
+    break;
+
   default:
     console.log("unknown command");
 }
@@ -50,6 +72,7 @@ function createFunction(name, fn) {
 
     if (type.indexOf("enum ") === 0) type = type.slice(5);
     if (type.indexOf("]") === type.length - 1) return `${type} memory`;
+    if (type.indexOf("]") === type.length - 3) return `${type} memory`;
     return type;
   }
 
@@ -86,7 +109,7 @@ function createFunction(name, fn) {
     return `(${fmtArgs(fn.inputs, withType, (withName = true))})`;
   }
 
-  return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank ${fmtOutput()} {
+  return `function ${fn.name}${fmtInput()} public ${fmtPayable()} startPrank stop ${fmtOutput()} {
         ${fmtReturn()}${name}(proxiedContract).${fn.name}${fmtValue()}${fmtInput(false)};
     }`;
 }
@@ -94,14 +117,13 @@ function createFunction(name, fn) {
 function blacksmithCode() {
   return `// SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
-
 interface Bsvm {
     function addr(uint256 privateKey) external returns (address addr);
-
     function deal(address who, uint256 amount) external;
-
     function startPrank(address sender, address origin) external;
-
+    function prank(address sender, address origin) external;
+    function startPrank(address sender) external;
+    function stopPrank() external;
     function sign(uint256 privateKey, bytes32 digest)
         external
         returns (
@@ -111,35 +133,37 @@ interface Bsvm {
         );
         
 }
-
 contract Blacksmith {
     Bsvm constant bsvm = Bsvm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
-
     address _address;
     uint256 privateKey;
-
     constructor(address _addr, uint256 _privateKey) {
         _address = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
         privateKey = _privateKey;
     }
-
-    modifier prank() {
+    modifier startPrank() {
         bsvm.startPrank(_address, _address);
         _;
     }
-
+    modifier prank() {
+        bsvm.prank(_address, _address);
+        _;
+    }
+    modifier stop() {
+        _;
+        bsvm.stopPrank();
+    }
     function addr() external view returns (address) {
         return _address;
     }
-
     function deal(uint256 _amount) public {
         bsvm.deal(_address, _amount);
     }
-
     function call(address _addr, bytes memory _calldata)
         public
         payable
-        prank
+        startPrank
+        stop
         returns (bytes memory)
     {
         require(_address.balance >= msg.value, "BS ERROR : Insufficient balance");
@@ -149,7 +173,6 @@ contract Blacksmith {
         require(success, "BS ERROR : Call failed");
         return data;
     }
-
     function sign(bytes32 _digest)
         external
         returns (
@@ -161,7 +184,6 @@ contract Blacksmith {
         require(privateKey != 0, "BS Error : No Private key");
         return bsvm.sign(privateKey, _digest);
     }
-
     receive() external payable {}
 }
 `;
@@ -172,10 +194,8 @@ function createCode({ name, source, abi }) {
 pragma solidity ^0.8.0;
 import "./Blacksmith.sol";
 import "../../${source.slice(4)}";
-
 contract ${name}BS {
     Bsvm constant bsvm = Bsvm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
-
     address addr;
     uint256 privateKey;
     address payable proxiedContract;
@@ -185,17 +205,22 @@ contract ${name}BS {
         privateKey = _privateKey;
         proxiedContract = payable(_target);
     }
-
     modifier prank() {
-        bsvm.startPrank(addr, addr);
+        bsvm.prank(addr,addr);
         _;
     }
-
+    modifier startPrank() {
+        bsvm.startPrank(addr,addr);
+        _;
+    }
+    modifier stop(){
+        _;
+        bsvm.stopPrank();
+    }
     ${abi
       .filter((x) => x.type === "function")
       .map((x) => createFunction(name, x))
       .join("\n\n\t")}
-
 }
 `;
   return code;

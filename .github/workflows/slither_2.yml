@@ -1,8 +1,35 @@
 name: Slither Analysis
-on: [push]
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: crytic/slither-action@v0.1.1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+
+      - name: Install Yarn
+        run: npm install --global yarn
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Build the contracts
+        run: node blacksmith.js build
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.1.1
+        with:
+          ignore-compile: true
