@@ -10,6 +10,3 @@
 [submodule "lib/log"]
 	path = lib/log
 	url = https://github.com/stevennevins/log
-[submodule "lib/memmove"]
-	path = lib/memmove
-	url = https://github.com/brockelmore/memmove
